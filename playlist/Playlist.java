@@ -11,7 +11,7 @@ public class Playlist {
     BTree<Song> data;
     LinkedCircularDoubleList<String> playlist;
     NodeDouble<String> actual_song;
-    AVLTree<EntryNode<String, String>> order_view;
+    AVLTree<EntryNode<Double, String>> order_view;
     int size;
     String order_parameter;
     boolean increasing;
@@ -34,22 +34,22 @@ public class Playlist {
                 String artistName = valores[1].trim();
                 String trackName = valores[2].trim();
                 String trackId = valores[3].trim();
-                String popularity = valores[4].trim();
-                String year = valores[5].trim();
+                int popularity = Integer.parseInt(valores[4].trim());
+                int year = Integer.parseInt(valores[5].trim());
                 String genre = valores[6].trim();
-                String danceability = valores[7].trim();
-                String energy = valores[8].trim();
-                String key = valores[9].trim();
-                String loudness = valores[10].trim();
-                String mode = valores[11].trim();
-                String speechiness = valores[12].trim();
-                String acousticness = valores[13].trim();
-                String instrumentalness = valores[14].trim();
-                String liveness = valores[15].trim();
-                String valence = valores[16].trim();
-                String tempo = valores[17].trim();
-                String durationMs = valores[18].trim();
-                String timeSignature = valores[19].trim();
+                double danceability = Double.parseDouble(valores[7].trim());
+                double energy = Double.parseDouble(valores[8].trim());
+                int key = Integer.parseInt(valores[9].trim());
+                double loudness = Double.parseDouble(valores[10].trim());
+                int mode = Integer.parseInt(valores[11].trim());
+                double speechiness = Double.parseDouble(valores[12].trim());
+                double acousticness = Double.parseDouble(valores[13].trim());
+                double instrumentalness = Double.parseDouble(valores[14].trim());
+                double liveness = Double.parseDouble(valores[15].trim());
+                double valence = Double.parseDouble(valores[16].trim());
+                double tempo = Double.parseDouble(valores[17].trim());
+                double durationMs = Double.parseDouble(valores[18].trim());
+                int timeSignature = Integer.parseInt(valores[19].trim());
 
                 Song song = new Song(artistName, trackName, trackId, popularity, year, genre, danceability,
                     energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness,
@@ -133,7 +133,7 @@ public class Playlist {
 
         System.out.println("PLAYLIST: ####################################################################");
         for(int i = 0; i < this.size; i++) {
-            Song song = this.data.find(new Song(aux_song .getData()));
+            Song song = this.data.find(new Song(aux_song.getData()));
             System.out.println("[" + song + "]");
             aux_song  = aux_song .getNext();
         }
@@ -182,32 +182,14 @@ public class Playlist {
     }
 
     public void sortByParameter(String parameter, boolean increasing) {
-        AVLTree<EntryNode<String, String>> avl = new AVLTree<>(increasing);
+        AVLTree<EntryNode<Double, String>> avl = new AVLTree<>(increasing);
         NodeDouble<String> aux_song = this.playlist.getFirst();
         this.increasing = increasing;
         switch(parameter) {
-            case "trackName":
-                for(int i = 0; i < this.size; i++) {
-                    Song song = this.data.find(new Song(aux_song.getData()));
-                    EntryNode<String, String> node = new EntryNode<>(song.getTrackName(), song.getTrackId());
-                    avl.insert(node);
-                    aux_song = aux_song.getNext();
-                    this.order_parameter = "trackName";
-                }
-                break;
-            case "artistName":
-                for(int i = 0; i < this.size; i++) {
-                    Song song = this.data.find(new Song(aux_song.getData()));
-                    EntryNode<String, String> node = new EntryNode<>(song.getArtistName(), song.getTrackId());
-                    avl.insert(node);
-                    aux_song = aux_song.getNext();
-                    this.order_parameter = "artistName";
-                }
-                break;
             case "popularity":
                 for(int i = 0; i < this.size; i++) {
                     Song song = this.data.find(new Song(aux_song.getData()));
-                    EntryNode<String, String> node = new EntryNode<>(song.getPopularity(), song.getTrackId());
+                    EntryNode<Double, String> node = new EntryNode<>(song.getPopularity()/1.0, song.getTrackId());
                     avl.insert(node);
                     aux_song = aux_song.getNext();
                     this.order_parameter = "popularity";
@@ -216,10 +198,46 @@ public class Playlist {
             case "year":
                 for(int i = 0; i < this.size; i++) {
                     Song song = this.data.find(new Song(aux_song.getData()));
-                    EntryNode<String, String> node = new EntryNode<>(song.getYear(), song.getTrackId());
+                    EntryNode<Double, String> node = new EntryNode<>(song.getYear()/1.0, song.getTrackId());
                     avl.insert(node);
                     aux_song = aux_song.getNext();
                     this.order_parameter = "year";
+                }
+                break;
+            case "danceability":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<Double, String> node = new EntryNode<>(song.getDanceability(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "danceability";
+                }
+                break;
+            case "energy":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<Double, String> node = new EntryNode<>(song.getEnergy(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "energy";
+                }
+                break;
+            case "loudness":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<Double, String> node = new EntryNode<>(song.getLoudness(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "loudness";
+                }
+                break;
+            case "durationMs":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<Double, String> node = new EntryNode<>(song.getDurationMs(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "durationMs";
                 }
                 break;
         }
@@ -230,13 +248,13 @@ public class Playlist {
     public void viewOrder() {
         if(this.order_view == null)
             System.out.println("Order parameter not set");
-        AVLNode<EntryNode<String, String>> aux = this.order_view.getRoot();
+        AVLNode<EntryNode<Double, String>> aux = this.order_view.getRoot();
         System.out.println("Playlist order by {" + this.order_parameter +  "} Increasing {" + this.increasing + "} : #######################");
         viewOrder(this.order_view.getRoot());
         System.out.println("#####################################################");
     }
     
-    private void viewOrder(AVLNode<EntryNode<String, String>> node) {
+    private void viewOrder(AVLNode<EntryNode<Double, String>> node) {
         if (node != null) {
             viewOrder(node.getLeft());
             Song song = this.data.find(new Song(node.getData().getValor()));

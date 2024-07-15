@@ -4,31 +4,31 @@ public class Song implements Comparable<Song> {
     private String trackName;
     private String artistName;
     private String trackId;
-    private String popularity;
-    private String year;
+    private int popularity;
+    private int year;
     private String genre;
-    private String danceability;
-    private String energy;
-    private String key;
-    private String loudness;
-    private String mode;
-    private String speechiness;
-    private String acousticness;
-    private String instrumentalness;
-    private String liveness;
-    private String valence;
-    private String tempo;
-    private String durationMs;
-    private String timeSignature;
+    private double danceability;
+    private double energy;
+    private int key;
+    private double loudness;
+    private int mode;
+    private double speechiness;
+    private double acousticness;
+    private double instrumentalness;
+    private double liveness;
+    private double valence;
+    private double tempo;
+    private double durationMs;
+    private int timeSignature;
 
     public Song(String trackId) {
-        this(null, null, trackId, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        this(null, null, trackId, 0, 0, null, 0.0, 0.0, 0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0);
     }
 
-    public Song(String artistName, String trackName, String trackId, String popularity, String year, String genre,
-    String danceability, String energy, String key, String loudness, String mode, String speechiness,
-    String acousticness, String instrumentalness, String liveness, String valence, String tempo,
-    String durationMs, String timeSignature) {
+    public Song(String artistName, String trackName, String trackId, int popularity, int year, String genre,
+    double danceability, double energy, int key, double loudness, int mode, double speechiness,
+    double acousticness, double instrumentalness, double liveness, double valence, double tempo,
+    double durationMs, int timeSignature) {
         this.artistName = artistName;
         this.trackName = trackName;
         this.trackId = trackId;
@@ -53,8 +53,12 @@ public class Song implements Comparable<Song> {
     public String getTrackId() { return this.trackId; }
     public String getTrackName() { return this.trackName; }
     public String getArtistName() { return this.artistName; }
-    public String getPopularity() { return this.popularity; }
-    public String getYear() { return this.year; }
+    public int getPopularity() { return this.popularity; }
+    public int getYear() { return this.year; }
+    public double getDanceability() { return this.danceability; }
+    public double getEnergy() { return this.energy; }
+    public double getLoudness() { return this.loudness; }
+    public double getDurationMs() { return this.durationMs; }
 
     @Override
     public int compareTo(Song other) {
@@ -70,11 +74,11 @@ public class Song implements Comparable<Song> {
 
     @Override
     public String toString() {
-        return "[" + this.trackName + "; " + this.artistName + "; " + this.trackId  + "; " + this.popularity +
-        "; " + this.year + "; " + this.genre + "; " + this.danceability + "; " + this.energy + "; " + this.key +
-        "; " + this.loudness + "; " + this.mode + "; " + this.speechiness + "; " + this.acousticness +
-        "; " + this.instrumentalness + "; " + this.liveness + "; " + this.valence + "; " + this.tempo +
-        "; " + this.durationMs + "; " + this.timeSignature + "]";
+        return "[trackName: " + this.trackName + "; artistName: " + this.artistName + "; trackId: " + this.trackId  + "; popularity: " + this.popularity +
+        "; year: " + this.year + "; genre: " + this.genre + "; danceability: " + this.danceability + "; energy: " + this.energy + "; key: " + this.key +
+        "; loudness: " + this.loudness + "; mode: " + this.mode + "; speechiness: " + this.speechiness + "; acousticness: " + this.acousticness +
+        "; instrumentalness: " + this.instrumentalness + "; liveness: " + this.liveness + "; valence: " + this.valence + "; tempo: " + this.tempo +
+        "; durationMs: " + this.durationMs + ";  timeSignature: " + this.timeSignature + "]";
         
     }
 }

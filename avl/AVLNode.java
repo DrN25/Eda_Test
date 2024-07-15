@@ -1,7 +1,5 @@
 package avl;
 
-import java.lang.classfile.components.ClassPrinter;
-
 public class AVLNode<E extends Comparable<E>> {
     E song;
     AVLNode<E> left, right;
