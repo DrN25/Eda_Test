@@ -165,6 +165,13 @@ public class Playlist {
         System.out.println("{PREV} Reproduciendo: [" + song.getTrackName() + "]");
     }
 
+    public String showDataActualSong() {
+        if(this.actual_song == null)
+            return "Actual song is null";
+        Song song = this.data.find(new Song(this.actual_song.getData()));
+        return song.toString();
+    }
+
     public void playRandom() {
         // Implementación pendiente
     }

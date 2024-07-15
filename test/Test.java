@@ -10,6 +10,7 @@ public class Test {
             playlist.insert("6obPXlIOuKuXpGN728oJmT");
             playlist.insert("7fFwjMZOZBaF7nuQmZ3kfc");
             playlist.insert("6og0Eyj8ECKdRiSfy1KzH1");
+            System.out.println(playlist.showDataActualSong());
             playlist.showPlaylist();
             playlist.play();
             playlist.changePosition(0,3);
@@ -31,8 +32,10 @@ public class Test {
             playlist.pause();
             playlist.next();
             playlist.remove("12r7dx0g78cQ8gPiRwF2c2");
+            System.out.println(playlist.showDataActualSong());
             playlist.showPlaylist();
             playlist.play();
+            System.out.println(playlist.showDataActualSong());
             playlist.prev();
             
 
