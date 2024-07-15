@@ -55,6 +55,9 @@ public class Song implements Comparable<Song> {
     public String getArtistName() { return this.artistName; }
     public String getPopularity() { return this.popularity; }
     public String getYear() { return this.year; }
+    public String getGenre() { return this.genre; }
+    public String getDanceability() { return this.danceability; }
+    public String getLoudness() { return this.loudness; }
 
     @Override
     public int compareTo(Song other) {

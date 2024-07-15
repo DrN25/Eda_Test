@@ -41,7 +41,9 @@ public class Test {
             playlist.sortByParameter("popularity", false);
             playlist.sortByParameter("artistName", true);
             playlist.sortByParameter("year", false);
-            
+            playlist.sortByParameter("genre", true);
+            playlist.sortByParameter("danceability", false);
+            playlist.sortByParameter("loudness", false);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
