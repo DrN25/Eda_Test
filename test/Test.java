@@ -37,12 +37,17 @@ public class Test {
             playlist.play();
             System.out.println(playlist.showDataActualSong());
             playlist.prev();
+            
             playlist.sortByParameter("popularity", true);
             playlist.sortByParameter("year", false);
             playlist.sortByParameter("danceability", true);
             playlist.sortByParameter("energy", false);
             playlist.sortByParameter("loudness", true);
             playlist.sortByParameter("durationMs", false);
+
+            playlist.showPlaylist();
+            playlist.viewToPlaylist();
+            playlist.showPlaylist();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

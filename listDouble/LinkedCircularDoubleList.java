@@ -98,6 +98,11 @@ public class LinkedCircularDoubleList<T extends Comparable<T>> implements TDALis
         }
     }
 
+    public void clear() {
+        this.first = null;
+        this.count = 0;
+    }
+
     public void cambiarOrden(int posicionActual, int nuevaPosicion) throws IndexOutOfBoundsException {
         if(posicionActual < 0 || posicionActual >= this.count || nuevaPosicion < 0 || nuevaPosicion >= this.count) {
             throw new IndexOutOfBoundsException("Invalid positions.");

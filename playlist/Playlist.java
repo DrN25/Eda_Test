@@ -246,20 +246,39 @@ public class Playlist {
     }
 
     public void viewOrder() {
-        if(this.order_view == null)
+        if(this.order_view == null) {
             System.out.println("Order parameter not set");
+            return;
+        }
         AVLNode<EntryNode<Double, String>> aux = this.order_view.getRoot();
         System.out.println("Playlist order by {" + this.order_parameter +  "} Increasing {" + this.increasing + "} : #######################");
         viewOrder(this.order_view.getRoot());
         System.out.println("#####################################################");
     }
     
-    private void viewOrder(AVLNode<EntryNode<Double, String>> node) {
+    public void viewOrder(AVLNode<EntryNode<Double, String>> node) {
         if (node != null) {
             viewOrder(node.getLeft());
             Song song = this.data.find(new Song(node.getData().getValor()));
             System.out.println(song.toString());
             viewOrder(node.getRight());
+        }
+    }
+
+    public void viewToPlaylist() {
+        if(this.order_view == null) {
+            System.out.println("Order parameter not set");
+            return;
+        }
+        this.playlist.clear();
+        viewToPlaylist(this.order_view.getRoot());
+    }
+
+    public void viewToPlaylist(AVLNode<EntryNode<Double, String>> node) {
+        if (node != null) {
+            viewToPlaylist(node.getLeft());
+            this.playlist.insert(node.getData().getValor());
+            viewToPlaylist(node.getRight());
         }
     }
 }
