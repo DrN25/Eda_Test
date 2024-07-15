@@ -1,12 +1,11 @@
 package playlist;
+import btree.*;
 import exceptions.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import btree.*;
 import listDouble.*;
 
 public class Playlist {
@@ -102,6 +101,9 @@ public class Playlist {
         if(exist) {
             playlist.remove(trackId);
             this.size--;
+
+            if(this.actual_song.getData().equals(trackId))
+                this.actual_song = actual_song.getNext();
         } else {
             throw new ItemNoFound("Song doesn't exist in the playlist");
         }

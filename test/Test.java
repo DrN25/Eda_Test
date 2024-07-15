@@ -30,6 +30,10 @@ public class Test {
             playlist.next();
             playlist.pause();
             playlist.next();
+            playlist.remove("12r7dx0g78cQ8gPiRwF2c2");
+            playlist.showPlaylist();
+            playlist.play();
+            playlist.prev();
             
 
         } catch (Exception e) {
