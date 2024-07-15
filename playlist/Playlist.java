@@ -4,8 +4,6 @@ import exceptions.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import listDouble.*;
 
 public class Playlist {
@@ -61,21 +59,35 @@ public class Playlist {
     }
 
     private String[] parseCSVLine(String line) {
-        List<String> values = new ArrayList<>();
+        String[] values = new String[20]; // Tamaño máximo basado en el ejemplo de 20 parametros
+        int index = 0;
         boolean inQuotes = false;
-        StringBuilder current = new StringBuilder();
-        for (char ch : line.toCharArray()) {
+        String current = "";
+    
+        for (int i = 0; i < line.length(); i++) {
+            char ch = line.charAt(i);
+    
             if (ch == '"') {
-                inQuotes = !inQuotes; // Toggle the inQuotes flag
+                inQuotes = !inQuotes; // Cambiar estado de comillas
             } else if (ch == ',' && !inQuotes) {
-                values.add(current.toString());
-                current.setLength(0); // Clear the StringBuilder
+                values[index++] = current; // Agregar valor actual al arreglo
+                current = ""; // Reiniciar para el siguiente valor
             } else {
-                current.append(ch);
+                current += ch; // Construir el valor actual
             }
         }
-        values.add(current.toString()); // Add the last value
-        return values.toArray(new String[0]);
+    
+        values[index++] = current; // Agregar el último valor al arreglo
+        return trimArray(values, index); // Recortar el arreglo al tamaño correcto
+    }
+    
+    // Método para recortar el arreglo al tamaño correcto
+    private String[] trimArray(String[] arr, int size) {
+        String[] trimmed = new String[size];
+        for (int i = 0; i < size; i++) {
+            trimmed[i] = arr[i];
+        }
+        return trimmed;
     }
 
     public void insert(String trackId) throws ItemDuplicated, ItemNoFound {
