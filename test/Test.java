@@ -37,6 +37,10 @@ public class Test {
             playlist.play();
             System.out.println(playlist.showDataActualSong());
             playlist.prev();
+            playlist.sortByParameter("trackName", true);
+            playlist.sortByParameter("popularity", false);
+            playlist.sortByParameter("artistName", true);
+            playlist.sortByParameter("year", false);
             
 
         } catch (Exception e) {

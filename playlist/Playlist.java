@@ -5,17 +5,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import listDouble.*;
+import avl.*;
 
 public class Playlist {
     BTree<Song> data;
     LinkedCircularDoubleList<String> playlist;
     NodeDouble<String> actual_song;
+    AVLTree<EntryNode<String, String>> order_view;
     int size;
+    String order_parameter;
+    boolean increasing;
 
     public Playlist(int order) {
         this.data = new BTree<>(order);
         this.playlist = new LinkedCircularDoubleList<>();
         this.actual_song = null;
+        this.order_view = null;
         this.size = 0;
     }
 
@@ -176,7 +181,67 @@ public class Playlist {
         // Implementación pendiente
     }
 
-    public void sortByParameter(String parameter) {
-        // Implementación pendiente
+    public void sortByParameter(String parameter, boolean increasing) {
+        AVLTree<EntryNode<String, String>> avl = new AVLTree<>(increasing);
+        NodeDouble<String> aux_song = this.playlist.getFirst();
+        this.increasing = increasing;
+        switch(parameter) {
+            case "trackName":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<String, String> node = new EntryNode<>(song.getTrackName(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "trackName";
+                }
+                break;
+            case "artistName":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<String, String> node = new EntryNode<>(song.getArtistName(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "artistName";
+                }
+                break;
+            case "popularity":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<String, String> node = new EntryNode<>(song.getPopularity(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "popularity";
+                }
+                break;
+            case "year":
+                for(int i = 0; i < this.size; i++) {
+                    Song song = this.data.find(new Song(aux_song.getData()));
+                    EntryNode<String, String> node = new EntryNode<>(song.getYear(), song.getTrackId());
+                    avl.insert(node);
+                    aux_song = aux_song.getNext();
+                    this.order_parameter = "year";
+                }
+                break;
+        }
+        this.order_view = avl;
+        viewOrder();
+    }
+
+    public void viewOrder() {
+        if(this.order_view == null)
+            System.out.println("Order parameter not set");
+        AVLNode<EntryNode<String, String>> aux = this.order_view.getRoot();
+        System.out.println("Playlist order by {" + this.order_parameter +  "} Increasing {" + this.increasing + "} : #######################");
+        viewOrder(this.order_view.getRoot());
+        System.out.println("#####################################################");
+    }
+    
+    private void viewOrder(AVLNode<EntryNode<String, String>> node) {
+        if (node != null) {
+            viewOrder(node.getLeft());
+            Song song = this.data.find(new Song(node.getData().getValor()));
+            System.out.println(song.toString());
+            viewOrder(node.getRight());
+        }
     }
 }
