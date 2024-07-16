@@ -74,11 +74,17 @@ public class Song implements Comparable<Song> {
 
     @Override
     public String toString() {
+        return "[trackName: " + this.trackName + "|| artistName: " + this.artistName + "|| trackId: " + this.trackId  + "|| popularity: " + this.popularity +
+        "|| year: " + this.year + "; genre: " + this.genre + "; danceability: " + this.danceability + "; energy: " + this.energy + 
+        "; loudness: " + this.loudness + "; durationMs: " + this.durationMs + "]";
+    }
+    /*  toString() con todos los datos de cada cancion
+    public String toString() {
         return "[trackName: " + this.trackName + "; artistName: " + this.artistName + "; trackId: " + this.trackId  + "; popularity: " + this.popularity +
         "; year: " + this.year + "; genre: " + this.genre + "; danceability: " + this.danceability + "; energy: " + this.energy + "; key: " + this.key +
         "; loudness: " + this.loudness + "; mode: " + this.mode + "; speechiness: " + this.speechiness + "; acousticness: " + this.acousticness +
         "; instrumentalness: " + this.instrumentalness + "; liveness: " + this.liveness + "; valence: " + this.valence + "; tempo: " + this.tempo +
         "; durationMs: " + this.durationMs + ";  timeSignature: " + this.timeSignature + "]";
-        
     }
+    */
 }

@@ -11,8 +11,10 @@ public class Playlist {
     BTree<Song> data;
     LinkedCircularDoubleList<String> playlist;
     NodeDouble<String> actual_song;
-    AVLTree<EntryNode<Double, String>> order_view;
     int size;
+    boolean playing_song;
+
+    AVLTree<EntryNode<Double, String>> order_view;
     String order_parameter;
     boolean increasing;
 
@@ -22,14 +24,14 @@ public class Playlist {
         this.actual_song = null;
         this.order_view = null;
         this.size = 0;
+        this.playing_song = false;
     }
-
+    // Metodo para cargar la informacion de las canciones del CSV al BTree
     public void loadSongs(String path) {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String linea;
             br.readLine(); // Saltar la primera línea (encabezados)
-            int count = 0; // Contador de canciones
-            while ((linea = br.readLine()) != null && count < 1040000) {
+            while ((linea = br.readLine()) != null) {
                 String[] valores = parseCSVLine(linea);
                 String artistName = valores[1].trim();
                 String trackName = valores[2].trim();
@@ -56,80 +58,70 @@ public class Playlist {
                     valence, tempo, durationMs, timeSignature);
 
                 data.insert(song);
-                count++; // Incrementar el contador
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
-
+    // Este metodo analiza la linea entregada, devolviendo el array resultante. Ademas, evita errores relacionados a "," dentro del trackName
     private String[] parseCSVLine(String line) {
         String[] values = new String[20]; // Tamaño máximo basado en el ejemplo de 20 parametros
         int index = 0;
-        boolean inQuotes = false;
+        boolean inQuotes = false;   // Indica si la lectura actual esta dentro de comillas dobles
         String current = "";
+        
+        //Si un campo del csv tiene "," dentro de si, este sera colocado entre "" para poder analizarlo correctamente
+        for(int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
     
-        for (int i = 0; i < line.length(); i++) {
-            char ch = line.charAt(i);
-    
-            if (ch == '"') {
-                inQuotes = !inQuotes; // Cambiar estado de comillas
-            } else if (ch == ',' && !inQuotes) {
+            if (c == '"') {
+                inQuotes = !inQuotes; // Si se encuentran comillas, entonces las "," no agregaran el elemento hasta salir de las comillas 
+            } else if (c == ',' && !inQuotes) {
                 values[index++] = current; // Agregar valor actual al arreglo
                 current = ""; // Reiniciar para el siguiente valor
             } else {
-                current += ch; // Construir el valor actual
+                current += c; // Agrega el valor actual
             }
         }
     
         values[index++] = current; // Agregar el último valor al arreglo
-        return trimArray(values, index); // Recortar el arreglo al tamaño correcto
-    }
-    
-    // Método para recortar el arreglo al tamaño correcto
-    private String[] trimArray(String[] arr, int size) {
-        String[] trimmed = new String[size];
-        for (int i = 0; i < size; i++) {
-            trimmed[i] = arr[i];
-        }
-        return trimmed;
+        return values;
     }
 
+    // Metodo que inserta el trackId entregado en la Playlist
     public void insert(String trackId) throws ItemDuplicated, ItemNoFound {
-        boolean exist = data.search(new Song(trackId));
-        if(exist) {
-            boolean duplicated = playlist.search(trackId);
-            if(this.size == 0) {
-                playlist.insert(trackId);
-                this.size++;
-            } else if (!duplicated) {
-                playlist.insert(trackId);
-                this.size++;
-            } else {
-                throw new ItemDuplicated("Song already exists in the playlist");
-            }
-        } else {
+        if(!data.search(new Song(trackId))) {    // No se permite insertar canciones que no existan en la base de datos
             throw new ItemNoFound("Song doesn't exist in the database");
+        } else {
+            boolean duplicated = playlist.search(trackId);
+            if(duplicated) {    // No se permite insertar canciones duplicadas
+                throw new ItemDuplicated("Song already exists in the playlist");
+            } else {       // Caso contrario, inserta la cancion a la playlist
+                playlist.insert(trackId);
+                this.size++;
+            }
         }
     }
 
+    // Metodo que elimina el trackId entregado en la Playlist
     public void remove(String trackId) throws ItemNoFound {
-        boolean exist = playlist.search(trackId);
-        if(exist) {
+        if(!playlist.search(trackId)) {    // No se permite eliminar canciones que no existan en la playlist
+            throw new ItemNoFound("Song doesn't exist in the playlist");
+        } else {    // Caso contrario, elimina la cancion de la playlist
             playlist.remove(trackId);
             this.size--;
 
-            if(this.actual_song.getData().equals(trackId))
+            if(this.actual_song.getData().equals(trackId))      // Si la cancion eliminada era referenciada por actual_song, se pasa al siguiente nodo
                 this.actual_song = actual_song.getNext();
-        } else {
-            throw new ItemNoFound("Song doesn't exist in the playlist");
         }
     }
 
+    // Metodo que imprime las canciones de la playlist actual
     public void showPlaylist() throws ExceptionIsEmpty {
-        if(this.playlist.isEmpty()) 
+        if(this.playlist.isEmpty())     // No se permite mostrar una playlist vacia
             throw new ExceptionIsEmpty("Playlist is empty");
-        NodeDouble<String> aux_song =  this.playlist.getFirst();
+
+        NodeDouble<String> aux_song =  this.playlist.getFirst();    // Se crea un nodo auxiliar que ayudara a recorrer toda la playlist
 
         System.out.println("PLAYLIST: ####################################################################");
         for(int i = 0; i < this.size; i++) {
@@ -140,32 +132,39 @@ public class Playlist {
         System.out.println("###############################################################################");
     }
 
+    // Metodo que cambia de posicion las canciones
     public void changePosition(int a, int b) {
-        this.playlist.cambiarOrden(a, b);
+        this.playlist.cambiarOrden(a, b);       // El cambio se realiza en el metodo cambiarOrden() de LinkedCircularDoubleList
     }
 
-    public void play() throws ExceptionIsEmpty {
-        if (this.playlist.isEmpty())
+    // Metodo que simula la reproduccion o pausa de la cancion actual de la playlist
+    public void play_pause() throws ExceptionIsEmpty {
+        if(this.playlist.isEmpty())    // No se permite reproducir o pausar la cancion si la playlist esta vacia
             throw new ExceptionIsEmpty("Playlist is empty");
-        if(this.actual_song == null)
-            this.actual_song = this.playlist.getFirst();
-        Song song = this.data.find(new Song(this.actual_song.getData()));
-        System.out.println("{PLAY} Reproduciendo: [" + song.getTrackName() + "]");
-    }
 
-    public void pause() {
+        if(this.actual_song == null)    // Si la cancion actual es null, se le asigna la primera posicion de la playlist
+            this.actual_song = this.playlist.getFirst();
+
         Song song = this.data.find(new Song(this.actual_song.getData()));
-        System.out.println("{PAUSE} Pausado: [" + song.getTrackName() + "]");
+        if(this.playing_song)  {         // Se verifica si la cancion actual se esta reproduciendo o no
+            this.playing_song = true;
+            System.out.println("{PLAY} Reproduciendo: [" + song.getTrackName() + "]");      // Simulacion reproduccion de la cancion actual
+        } else {
+            this.playing_song = false;
+            System.out.println("{PAUSE} En pausa: [" + song.getTrackName() + "]");      // Simulacion pausa de la cancion actual
+        }
     }
 
     public void next() {
         this.actual_song = this.actual_song.getNext();
+        this.playing_song = true;
         Song song = this.data.find(new Song(this.actual_song.getData()));
         System.out.println("{NEXT} Reproduciendo: [" + song.getTrackName() + "]");
     }
 
     public void prev() {
         this.actual_song = this.actual_song.getBack();
+        this.playing_song = true;
         Song song = this.data.find(new Song(this.actual_song.getData()));
         System.out.println("{PREV} Reproduciendo: [" + song.getTrackName() + "]");
     }
