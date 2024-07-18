@@ -162,7 +162,6 @@ public class BTree <E extends Comparable<E>> {
             System.out.println("BTree is empty...");
             return;
         }
-        //
         delete(cl, this.root);
     }
 
